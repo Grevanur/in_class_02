@@ -7,16 +7,22 @@ void main() {
 
 /// Design tokens that complement Material's built-in [ColorScheme].
 class AppColors extends ThemeExtension<AppColors> {
-  const AppColors({required this.success, required this.panel});
+  const AppColors({
+    required this.success,
+    required this.panel,
+    required this.panelForeground,
+  });
 
   final Color success;
   final Color panel;
+  final Color panelForeground;
 
   @override
-  AppColors copyWith({Color? success, Color? panel}) {
+  AppColors copyWith({Color? success, Color? panel, Color? panelForeground}) {
     return AppColors(
       success: success ?? this.success,
       panel: panel ?? this.panel,
+      panelForeground: panelForeground ?? this.panelForeground,
     );
   }
 
@@ -28,6 +34,7 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(
       success: Color.lerp(success, other.success, t)!,
       panel: Color.lerp(panel, other.panel, t)!,
+      panelForeground: Color.lerp(panelForeground, other.panelForeground, t)!,
     );
   }
 }
@@ -118,9 +125,9 @@ class _ThemeSwitcherAppState extends State<ThemeSwitcherApp> {
       extensions: [
         AppColors(
           success: isDark ? Colors.greenAccent.shade200 : Colors.green.shade700,
-          panel: isDark
-              ? colorScheme.surfaceContainerHigh
-              : colorScheme.surfaceContainerLowest,
+          // Matches the assignment's required gray-to-white panel transition.
+          panel: isDark ? Colors.white : Colors.grey,
+          panelForeground: Colors.black87,
         ),
       ],
     );
@@ -182,7 +189,9 @@ class ThemeHome extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         isDark ? 'Dark mode active' : 'Light mode active',
-                        style: theme.textTheme.titleMedium,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: appColors.panelForeground,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
